@@ -79,8 +79,8 @@ add_custom_target(sdl2_build ALL
 )
 
 # Create imported target
-add_library(SDL2SG::SDL2SG SHARED IMPORTED)
-set_target_properties(SDL2SG::SDL2SG PROPERTIES
+add_library(SDL2::SDL2 SHARED IMPORTED)
+set_target_properties(SDL2::SDL2 PROPERTIES
     IMPORTED_LOCATION ${SDL2_BUILD_DIR}/libSDL2-2.0.so
     INTERFACE_INCLUDE_DIRECTORIES ${SDL2_SOURCE_DIR}/include
 )
@@ -162,7 +162,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Quick
     ${AURORA_LDFLAGS}
-    SDL2SG::SDL2SG
+    SDL2::SDL2
     ${GLESv2_LIBRARIES}
     ${EGL_LIBRARIES}
     ${WAYLAND_LIBRARIES}
