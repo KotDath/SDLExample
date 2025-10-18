@@ -4,23 +4,23 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <location filename="../../SDLExample/qml/pages/AboutPage.qml" line="22"/>
+        <location filename="../qml/pages/AboutPage.qml" line="22"/>
         <source>About Application</source>
         <translation>О приложении</translation>
     </message>
     <message>
-        <location filename="../../SDLExample/qml/pages/AboutPage.qml" line="32"/>
+        <location filename="../qml/pages/AboutPage.qml" line="32"/>
         <source>#descriptionText</source>
         <translation>&lt;p&gt;Проект предоставляет шаблон приложений для ОС&amp;nbsp;Аврора.&lt;/p&gt;
 &lt;p&gt;Основная цель&amp;nbsp;— наглядно продемонстрировать практически минимальный исходный код для получения корректного и расширяемого приложения.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../SDLExample/qml/pages/AboutPage.qml" line="37"/>
+        <location filename="../qml/pages/AboutPage.qml" line="37"/>
         <source>3-Clause BSD License</source>
         <translation>Лицензия 3-Clause BSD</translation>
     </message>
     <message>
-        <location filename="../../SDLExample/qml/pages/AboutPage.qml" line="47"/>
+        <location filename="../qml/pages/AboutPage.qml" line="47"/>
         <source>#licenseText</source>
         <translation>&lt;p&gt;&lt;i&gt;Copyright (C) 2024 Open Mobile Platform LLC&lt;/i&gt;&lt;/p&gt;
 &lt;p&gt;Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:&lt;/p&gt;
@@ -35,7 +35,7 @@
 <context>
     <name>DefaultCoverPage</name>
     <message>
-        <location filename="../../SDLExample/qml/cover/DefaultCoverPage.qml" line="11"/>
+        <location filename="../qml/cover/DefaultCoverPage.qml" line="11"/>
         <source>Application Template</source>
         <translation>Шаблон приложения</translation>
     </message>
@@ -47,8 +47,23 @@
         <translation type="vanished">Шаблон приложения</translation>
     </message>
     <message>
-        <location filename="../../SDLExample/qml/pages/MainPage.qml" line="12"/>
+        <location filename="../qml/pages/MainPage.qml" line="12"/>
         <source>SDL2 Example</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/MainPage.qml" line="30"/>
+        <source>SDL2 Integration Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/MainPage.qml" line="37"/>
+        <source>Check console output for SDL2 status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/MainPage.qml" line="46"/>
+        <source>Test SDL2 Info</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
