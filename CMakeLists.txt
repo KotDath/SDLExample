@@ -7,6 +7,85 @@ include(FindPkgConfig)
 pkg_search_module(AURORA auroraapp REQUIRED)
 pkg_search_module(AURORA auroraapp_i18n REQUIRED)
 
+# Find OpenGL ES 2.0 using pkg-config for Aurora OS
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLESv2 REQUIRED glesv2)
+
+# Find EGL for Wayland (no X11)
+pkg_check_modules(EGL REQUIRED egl)
+
+# Add Wayland support
+pkg_check_modules(WAYLAND REQUIRED wayland-client wayland-egl)
+pkg_check_modules(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
+
+# Set EGL_NO_X11 for Wayland
+add_definitions(-DEGL_NO_X11)
+
+# Print debug info
+message(STATUS "GLESv2 libraries: ${GLESv2_LIBRARIES}")
+message(STATUS "GLESv2 include dirs: ${GLESv2_INCLUDE_DIRS}")
+message(STATUS "EGL libraries: ${EGL_LIBRARIES}")
+message(STATUS "EGL include dirs: ${EGL_INCLUDE_DIRS}")
+
+# Build SDL2 from local source directory
+set(SDL2_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/sdlbin)
+set(SDL2_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libsdl)
+
+# Configure SDL2 build for Wayland
+message(STATUS "Configuring SDL2 in ${SDL2_BUILD_DIR} for Wayland")
+
+execute_process(
+    COMMAND ${CMAKE_COMMAND}
+        -G Ninja
+        -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja
+        -B${SDL2_BUILD_DIR}
+        -DCMAKE_BUILD_TYPE=Release
+        -DSDL_PULSEAUDIO=ON
+        -DSDL_RPATH=OFF
+        -DSDL_STATIC=OFF
+        -DSDL_WAYLAND=ON
+        -DSDL_WAYLAND_SHARED=ON
+        -DSDL_X11=OFF
+        -DSDL_WAYLAND_LIBDECOR=OFF
+        -DSDL_OPENGL=ON
+        -DSDL_OPENGLES=ON
+        -DCMAKE_INSTALL_PREFIX=${SDL2_INSTALL_DIR}
+        -DEGL_NO_X11=1
+        ${CMAKE_SOURCE_DIR}/libsdl
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    RESULT_VARIABLE SDL2_CONFIGURE_RESULT
+)
+
+if(SDL2_CONFIGURE_RESULT)
+    message(FATAL_ERROR "Failed to configure SDL2")
+endif()
+
+# Build SDL2 immediately after configuration
+message(STATUS "Building SDL2...")
+execute_process(
+    COMMAND ninja -C ${SDL2_BUILD_DIR}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    RESULT_VARIABLE SDL2_BUILD_RESULT
+)
+
+if(SDL2_BUILD_RESULT)
+    message(FATAL_ERROR "Failed to build SDL2")
+endif()
+
+# Create a dummy target for compatibility
+add_custom_target(sdl2_build ALL
+    COMMAND ${CMAKE_COMMAND} -E echo "SDL2 already built during configuration"
+    COMMENT "SDL2 was built during configuration phase"
+)
+
+# Create imported target
+add_library(SDL2SG::SDL2SG SHARED IMPORTED)
+set_target_properties(SDL2SG::SDL2SG PROPERTIES
+    IMPORTED_LOCATION ${SDL2_BUILD_DIR}/libSDL2-2.0.so
+    INTERFACE_INCLUDE_DIRECTORIES ${SDL2_SOURCE_DIR}/include
+)
+
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -76,10 +155,17 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 target_include_directories(${PROJECT_NAME} PRIVATE
     $<BUILD_INTERFACE:
     ${AURORA_INCLUDE_DIRS}
->)
+    ${GLESv2_INCLUDE_DIRS}
+    ${EGL_INCLUDE_DIRS}
+    ${WAYLAND_INCLUDE_DIRS}
+)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Quick
     ${AURORA_LDFLAGS}
+    SDL2SG::SDL2SG
+    ${GLESv2_LIBRARIES}
+    ${EGL_LIBRARIES}
+    ${WAYLAND_LIBRARIES}
 )
 
 install(TARGETS ${PROJECT_NAME}
